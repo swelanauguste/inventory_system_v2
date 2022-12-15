@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block head_title %}
+Printers -
+{% endblock head_title %}
+
+{% block content %}
+<div class="border shadow rounded-5 container p-5 col-lg-6 mx-auto">
+    <h3 class="text-center">Add Form</h3>
+    <hr>
+    <form action="{% url 'equip:printer-create' %}"
+        method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                {{ printer_create_form.group|as_crispy_field }}
+            </div>
+            <div class="col-lg-6">
+                {{ printer_create_form.manufacturer|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                {{ printer_create_form.name|as_crispy_field }}
+            </div>
+            <div class="col-lg-6">
+                {{ printer_create_form.serial_number|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                {{ printer_create_form.floor|as_crispy_field }}
+            </div>
+            <div class="col-lg-4">
+                {{ printer_create_form.user_section|as_crispy_field }}
+            </div>
+            <div class="col-lg-4">
+                {{ printer_create_form.office|as_crispy_field }}
+            </div>
+        </div>
+        <br>
+        <div class="text-end">
+            <button class="btn btn-dark"
+                type="submit">Add</i></button>
+        </div>
+    </form>
+</div>
+<br>
+<hr>
+<div class="my-5 table responsive container">
+    <table class="table table-sm table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Printer name</th>
+                <th scope="col">Ink Name</th>
+                <th scope="col">User/Section</th>
+                <th scope="col">Serial number</th>
+                <th scope="col">Floor/Office</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{object.manufacturer}} {{object.name}}</td>
+                <td>
+                    {% for ink in object.ink_list.all %}
+                    {{ink}},
+                    {% endfor %}
+                </td>
+                <td>{{object.user|default:"-"}}/{{object.section|default:"-"}}
+                </td>
+                <td>{{object.serial_number|upper}}</td>
+                <td>{{object.floor|upper|default:"-"}}/{{object.office|upper|default:"-"}}
+                </td>
+                <td><a class="text-decoration-none text-info"
+                        href="{{object.get_absolute_url}}"><i
+                            class="bi bi-three-dots-vertical"></i></a></td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
